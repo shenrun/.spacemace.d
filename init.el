@@ -33,7 +33,7 @@ values."
    '(
      ipython-notebook
      python
-     ;;custocusto -custo----spacemac-----------------------------------------------------------
+     ;;custocusto -custo----spacemac----custo-------------------------------------------------------
      ;; Example of useful layers you may want
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
@@ -298,10 +298,6 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (setq configuration-layer--elpa-archives
-        '(("melpa-cn" . "http://elpa.emacs-china.com/melpa/")
-          ("org-cn"   . "http://elpa.emacs-china.com/org/")
-          ("gnu-cn"   . "http://elpa.emacs-china.com/gnu/")))
   )
 
 (defun dotspacemacs/user-config ()
