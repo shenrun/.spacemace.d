@@ -11,8 +11,8 @@ values."
    ;; `+distribution'. For now available distributions are `spacemacs-base'
    ;; or `spacemacs'. (default 'spacemacs)
    dotspacemacs-distribution 'spacemacs
-   ;; Lazy installation of layers (i.e. layers are in  (setq )
-   ;; with a suppo  (setq )
+   ;; Lazy installation of layers (i.e. layers are in
+   ;; with a suppo
    ;; and `nil'. `unused' will lazy install only unused layers (i.e. layers
    ;; not listed in variable `dotspacemacs-configuration-layers'), `all' will
    ;; lazy install any layer that support lazy installation even the layers
@@ -21,23 +21,22 @@ values."
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
    dotspacemacs-enable-lazy-installation 'unused
-   ;; If non-nil then Space  (setq )
+   ;; If non-nil then Space
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
-   ;; If non-nil layers w  (setq )
-   ;; List of additional paths where to lccucustoscustotoustooocustok for configuration layers.
+   ;; If non-ninotesl layers w
+   ;; List of additional paths where to for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/custo')
-   dotspacemacs-configuration-layer-pathcusto '()
-   ;; List   (setq )
+   dotspacemacs-configuration-layer-path '()
+   ;; List
    dotspacemacs-configuration-layers
-   '(
+   '(latex
+     c-c++
+     selectric
+     games
      ipython-notebook
      python
-     ;;custocusto -custo----spacemac----custo-------------------------------------------------------
-     ;; Example of useful layers you may want
-     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
-     ;; <M-m f e R> (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
+     (ranger :variables ranger-show-preview t)
      ivy
      helm
      auto-completion
@@ -59,8 +58,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(2048-game
-                                      all-the-icons)
+   dotspacemacs-additional-packages '(all-the-icons)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -298,6 +296,9 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  (setq org-directory "~/Documents/MobileOrg")
+  (setq org-mobile-directory "~/Documents/MobileOrg")
+  (setq org-mobile-inbox-for-pull "~/Documents/MobileOrg/mobileorg.org")
   )
 
 (defun dotspacemacs/user-config ()
@@ -311,6 +312,14 @@ you should place your code here."
   (define-key evil-insert-state-map [escape] 'evil-normal-state)
   (setq powerline-default-separator 'arrow)
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+  (with-eval-after-load 'org
+    (setq org-capture-templates
+          '(("t" "Todo" entry (file+headline "~/Documents/MobileOrg/notes.org" "Tasks")
+             "* TODO [#B] %?\n  %i\n"
+             :empty-lines 1))
+          ))
+  ;;   (setq org-default-notes-file "~/Documents/MobileOrg/notes.org")
+  ;;   (setq org-agenda-files "~/Documents/MobileOrg/notes.org"))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
