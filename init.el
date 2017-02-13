@@ -47,9 +47,12 @@ values."
      org
      osx
      shenrun
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
+     dash
+     (chinese :variables
+              chinese-enable-youdao-dict t)
+     (shell :variables
+            shell-default-height 30
+            shell-default-position 'bottom)
      spell-checking
      syntax-checking
      ;; version-control
@@ -298,7 +301,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (setq org-directory "~/Documents/MobileOrg")
   (setq org-mobile-directory "~/Documents/MobileOrg")
-  (setq org-mobile-inbox-for-pull "~/Documents/MobileOrg/mobileorg.org")
+  (setq org-mobile-inbox-for-pull "~/Documents/MobileOrg/inbox.org")
   )
 
 (defun dotspacemacs/user-config ()
