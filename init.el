@@ -26,13 +26,14 @@ values."
    dotspacemacs-ask-for-lazy-installation t
    ;; If non-ninotesl layers w
    ;; List of additional paths where to for configuration layers.
-   ;; Paths must have a trailing slash (i.e. `~/.mycontribs/custo')
+   ;; Paths must have a trailing slash (
    dotspacemacs-configuration-layer-path '()
    ;; List
    dotspacemacs-configuration-layers
-   '(latex
+   '((latex :variables latex-enable-folding t)
      c-c++
      selectric
+     javascript
      games
      ipython-notebook
      python
@@ -48,11 +49,15 @@ values."
      osx
      shenrun
      dash
+     pdf-tools
+     imenu-list
      (chinese :variables
               chinese-enable-youdao-dict t)
      (shell :variables
+            shell-default-shell 'ansi-term
             shell-default-height 30
-            shell-default-position 'bottom)
+            shell-default-position 'bottom
+            shell-enable-smart-eshell t)
      spell-checking
      syntax-checking
      ;; version-control
@@ -321,8 +326,8 @@ you should place your code here."
              "* TODO [#B] %?\n  %i\n"
              :empty-lines 1))
           ))
-  ;;   (setq org-default-notes-file "~/Documents/MobileOrg/notes.org")
-  ;;   (setq org-agenda-files "~/Documents/MobileOrg/notes.org"))
+  (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+  ;; (pdf-tools-install)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -344,3 +349,9 @@ you should place your code here."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+)
