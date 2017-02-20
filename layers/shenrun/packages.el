@@ -9,9 +9,7 @@
 ;;
 ;;; License: GPLv3
 
-;;; Commentary:
-
-;; See the Spacemacs documentation and FAQs for instructions on how to implement
+;;; Commentathe Spacemacs documentation and FAQs for instructions on how to implement
 ;; a new layer:
 ;;
 ;;   SPC h SPC layers RET
@@ -27,20 +25,11 @@
 ;;   define the functions `shenrun/pre-init-PACKAGE' and/or
 ;;   `shenrun/post-init-PACKAGE' to customize the package as it is loaded.
 
-;;; Code:
+;;; Code
 
 (defconst shenrun-packages
-  '(youdao-dictionary
-    )
-  )
-
-(defun shenrun/init-youdao-dictionary()
-  (use-package youdao-dictionary
-    :defer t
-    :init
-    (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
-    )
-  )
+  '(company
+    ))
 
 (defun shenrun/post-init-company()
   (setq company-idle-delay 0.08

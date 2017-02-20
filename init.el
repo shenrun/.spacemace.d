@@ -327,6 +327,7 @@ you should place your code here."
              :empty-lines 1))
           ))
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+  (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
   ;; (pdf-tools-install)
   )
 
