@@ -26,7 +26,7 @@ values."
    dotspacemacs-ask-for-lazy-installation t
    ;; If non-ninotesl layers w
    ;; List of additional paths where to for configuration layers.
-   ;; Paths must have a trailing slash (
+   ;; Paths must have a tradictionary()iling slash (
    dotspacemacs-configuration-layer-path '()
    ;; List
    dotspacemacs-configuration-layers
@@ -329,6 +329,41 @@ you should place your code here."
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
   (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
   ;; (pdf-tools-install)
+  ;; set pdf viewer on OSX and Linux
+  (with-eval-after-load 'latex
+    (setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(setq reftex-plug-into-AUCTeX t)
+(setq TeX-PDF-mode t)
+
+;; Use Skim as viewer, enable source <-> PDF sync
+;; make latexmk available via C-c C-c
+;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
+(add-hook 'LaTeX-mode-hook (lambda ()
+  (push
+    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+      :help "Run latexmk on file")
+    TeX-command-list)))
+(add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+
+;; use Skim as default pdf viewer
+;; Skim's displayline is used for forward search (from .tex to .pdf)
+;; option -b highlights the current line; option -g opens Skim in the background
+
+
+  ;; enable PDF-LaTeX synchronization
+  ;; press SPC m v to highlight line in PDF
+  ;; press shift cmd and click in PDF to show line in sourcecode
+  (setq TeX-source-correlate-mode t)
+  (setq TeX-source-correlate-start-server t)
+  (setq TeX-source-correlate-method 'synctex)
+  (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+  (setq TeX-view-program-list '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

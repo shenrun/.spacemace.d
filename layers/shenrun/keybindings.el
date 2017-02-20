@@ -29,4 +29,3 @@
 (spacemacs/set-leader-keys "oe" 'iedit-mode)
 
 (global-set-key (kbd "C-=") 'er/expand-region)
- 

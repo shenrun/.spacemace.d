@@ -29,10 +29,12 @@
 
 (defconst shenrun-packages
   '(company
-    ))
+    hungry-delete))
 
 (defun shenrun/post-init-company()
   (setq company-idle-delay 0.08
         company-minimum-prefix-length 1)
   )
+(defun shenrun/post-init-hungry-delete()
+  (setq global-hungry-delete-mode t))
 ;;; packages.el ends here
