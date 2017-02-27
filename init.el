@@ -31,6 +31,7 @@ values."
    ;; List
    dotspacemacs-configuration-layers
    '((latex :variables latex-enable-folding t)
+     racket
      c-c++
      selectric
      javascript
@@ -322,10 +323,19 @@ you should place your code here."
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (with-eval-after-load 'org
     (setq org-capture-templates
-          '(("t" "Todo" entry (file+headline "~/Documents/MobileOrg/notes.org" "Tasks")
+          '(("t" "Todo" entry (file+headline "~/Documents/MobileOrg/gtd.org" "Tasks")
              "* TODO [#B] %?\n  %i\n"
-             :empty-lines 1))
-          ))
+             :empty-lines 1)
+            ("n" "Notes" entry (file+datetree "~/Desktop/Notes/notes.org")
+             "* %?\nEntered on %U\n"))
+          )
+    ;; Remove the markup characters, i.e., "/text/" becomes (italized) "text"
+    (setq org-hide-emphasis-markers t)
+
+    ;; Turn on visual-line-mode for Org-mode only
+    ;; Also install "adaptive-wrap" from elpa
+    (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+    )
   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
   (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
   ;; (pdf-tools-install)
@@ -364,6 +374,8 @@ you should place your code here."
   (setq TeX-source-correlate-method 'synctex)
   (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
   (setq TeX-view-program-list '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
+
+  (setq ns-use-srgb-colorspace nil)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
