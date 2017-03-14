@@ -30,7 +30,9 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List
    dotspacemacs-configuration-layers
-   '((latex :variables latex-enable-folding t)
+   '((latex :variables
+            latex-enable-folding t
+            latex-build-command "LaTeX")
      racket
      c-c++
      selectric
@@ -375,7 +377,10 @@ you should place your code here."
   (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
   (setq TeX-view-program-list '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
 
-  (setq ns-use-srgb-colorspace nil)
+(setq ns-use-srgb-colorspace nil)
+;;解决自动复制的问题
+(add-hook 'spacemacs-buffer-mode-hook (lambda ()
+                                        (set (make-local-variable 'mouse-1-click-follows-link) nil)))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

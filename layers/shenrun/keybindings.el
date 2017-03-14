@@ -28,4 +28,6 @@
 
 (spacemacs/set-leader-keys "oe" 'iedit-mode)
 
+(spacemacs/set-leader-keys "op" 'perspective)
+
 (global-set-key (kbd "C-=") 'er/expand-region)
