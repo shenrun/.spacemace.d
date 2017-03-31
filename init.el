@@ -30,9 +30,17 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List
    dotspacemacs-configuration-layers
-   '((latex :variables
+   '(
+     (colors :variables
+             colors-colorize-identifiers 'all
+             colors-enable-nyan-cat-progress-bar t)
+     html
+     vimscript
+     (latex :variables
             latex-enable-folding t
             latex-build-command "LaTeX")
+     (version-control :variables
+                      version-control-global-margin t)
      racket
      c-c++
      selectric
@@ -48,11 +56,11 @@ values."
      emacs-lisp
      git
      markdown
-     org
+     pdf-tools
      osx
+     (org :variables org-enable-reveal-js-support t)
      shenrun
      dash
-     pdf-tools
      imenu-list
      (chinese :variables
               chinese-enable-youdao-dict t)
@@ -63,13 +71,18 @@ values."
             shell-enable-smart-eshell t)
      spell-checking
      syntax-checking
-     ;; version-control
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(all-the-icons)
+   dotspacemacs-additional-packages '(all-the-icons
+                                      all-the-icons-dired
+                                      wrap-region
+                                      color-theme-sanityinc-tomorrow
+                                      org-edit-latex
+                                      ox-ioslide
+                                      highlight-thing)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -116,7 +129,7 @@ values."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'vim
+   dotspacemacs-editing-style 'hybrid
    ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
    ;; Specify the startup banner. Default value is `official', it displays
@@ -143,6 +156,8 @@ values."
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(spacegray
                          zenburn
+                         dracula
+                         moe
                          spacemacs-dark
                          spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
@@ -179,7 +194,7 @@ values."
    dotspacemacs-distinguish-gui-tab nil
    ;; If non nil `Y' is remapped to `y$' in Evil states. (default nil)
    dotspacemacs-remap-Y-to-y$ nil
-    ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
+   ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
    ;; there. (default t)
    dotspacemacs-retain-visual-state-on-shift t
    ;; If non-nil, J and K move lines up and down when in visual mode.
@@ -291,8 +306,6 @@ values."
    ;; The default package repository used if no explicit repository has been
    ;; specified with an installed package.
    ;; Not used for now. (default nil)
-   dotspacemacs-default-package-repository nil
-   ;; Delete whitespace while saving buffer. Possible values are `all'
    ;; to aggressively delete empty line and long sequences of whitespace,
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
@@ -319,54 +332,269 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-  (setcdr evil-insert-state-map nil)
-  (define-key evil-insert-state-map [escape] 'evil-normal-state)
-  (setq powerline-default-separator 'arrow)
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-  (with-eval-after-load 'org
-    (setq org-capture-templates
-          '(("t" "Todo" entry (file+headline "~/Documents/MobileOrg/gtd.org" "Tasks")
-             "* TODO [#B] %?\n  %i\n"
-             :empty-lines 1)
-            ("n" "Notes" entry (file+datetree "~/Desktop/Notes/notes.org")
-             "* %?\nEntered on %U\n"))
-          )
-    ;; Remove the markup characters, i.e., "/text/" becomes (italized) "text"
-    (setq org-hide-emphasis-markers t)
 
-    ;; Turn on visual-line-mode for Org-mode only
-    ;; Also install "adaptive-wrap" from elpa
-    (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
-    )
-  (add-hook 'doc-view-mode-hook 'auto-revert-mode)
-  (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
-  ;; (pdf-tools-install)
-  ;; set pdf viewer on OSX and Linux
-  (with-eval-after-load 'latex
-    (setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq-default TeX-master nil)
-(add-hook 'LaTeX-mode-hook 'visual-line-mode)
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(setq reftex-plug-into-AUCTeX t)
-(setq TeX-PDF-mode t)
 
-;; Use Skim as viewer, enable source <-> PDF sync
-;; make latexmk available via C-c C-c
-;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
-(add-hook 'LaTeX-mode-hook (lambda ()
-  (push
-    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
-      :help "Run latexmk on file")
-    TeX-command-list)))
-(add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+  ;;org-mode export to latex
+  (require 'ox-latex)
+  (setq org-latex-listings 'minted)
+  ;; (setq org-export-latex-listings t)
 
-;; use Skim as default pdf viewer
-;; Skim's displayline is used for forward search (from .tex to .pdf)
-;; option -b highlights the current line; option -g opens Skim in the background
+  ;; ;;org-mode source code setup in exporting to latex
+  ;; (add-to-list 'org-latex-listings '("" "listings"))
+  ;; (add-to-list 'org-latex-listings '("" "color"))
+  (add-to-list 'org-latex-packages-alist '("newfloat" "minted"))
 
+  (add-to-list 'org-latex-packages-alist
+               '("" "xcolor" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "listings" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "fontspec" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "indentfirst" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "xunicode" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "geometry"))
+  (add-to-list 'org-latex-packages-alist
+               '("" "float"))
+  (add-to-list 'org-latex-packages-alist
+               '("" "longtable"))
+  (add-to-list 'org-latex-packages-alist
+               '("" "tikz"))
+  (add-to-list 'org-latex-packages-alist
+               '("" "fancyhdr"))
+  (add-to-list 'org-latex-packages-alist
+               '("" "textcomp"))
+  (add-to-list 'org-latex-packages-alist
+               '("" "amsmath"))
+  (add-to-list 'org-latex-packages-alist
+               '("" "tabularx" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "booktabs" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "grffile" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "wrapfig" t))
+  (add-to-list 'org-latex-packages-alist
+               '("normalem" "ulem" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "amssymb" t))
+  (add-to-list 'org-latex-packages-alist
+               '("" "capt-of" t))
+  (add-to-list 'org-latex-packages-alist
+               '("figuresright" "rotating" t))
+  (add-to-list 'org-latex-packages-alist
+               '("Lenny" "fncychap" t))
+
+  (add-to-list 'org-latex-classes
+               '("yanming-org-book"
+                 "\\documentclass{book}
+\\usepackage[slantfont, boldfont]{xeCJK}
+% chapter set
+\\usepackage{titlesec}
+\\usepackage{hyperref}
+
+[NO-DEFAULT-PACKAGES]
+[PACKAGES]
+
+
+
+\\setCJKmainfont{楷体-简} % 设置缺省中文字体
+\\setCJKsansfont{WenQuanYi Micro Hei}
+\\setCJKmonofont{WenQuanYi Micro Hei Mono}
+
+\\setmainfont{Bodoni 72} % 英文衬线字体
+\\setsansfont{Arial} % 英文无衬线字体
+\\setmonofont{DejaVu Sans Mono}
+%\\setmainfont{WenQuanYi Micro Hei} % 设置缺省中文字体
+%\\setsansfont{WenQuanYi Micro Hei}
+%\\setmonofont{WenQuanYi Micro Hei Mono}
+
+%如果没有它，会有一些 tex 特殊字符无法正常使用，比如连字符。
+\\defaultfontfeatures{Mapping=tex-text}
+
+% 中文断行
+\\XeTeXlinebreaklocale \"zh\"
+\\XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+
+% 代码设置
+\\lstset{numbers=left,
+numberstyle= \\tiny,
+keywordstyle= \\color{ blue!70},commentstyle=\\color{red!50!green!50!blue!50},
+frame=shadowbox,
+breaklines=true,
+rulesepcolor= \\color{ red!20!green!20!blue!20}
+}
+
+[EXTRA]
+"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("yanming-org-article"
+                 "\\documentclass{article}
+\\usepackage[slantfont, boldfont]{xeCJK}
+\\usepackage{titlesec}
+\\usepackage{hyperref}
+
+[NO-DEFAULT-PACKAGES]
+[PACKAGES]
+
+\\parindent 2em
+
+%\\setCJKmainfont{楷体-简} % 设置缺省中文字体
+%\\setCJKsansfont{WenQuanYi Micro Hei}
+%\\setCJKmonofont{WenQuanYi Micro Hei Mono}
+
+%\\setmainfont{Bodoni 72} % 英文衬线字体
+%\\setmainfont{WenQuanYi Micro Hei} % 设置缺省中文字体
+%\\setsansfont{WenQuanYi Micro Hei}
+%\\setmonofont{WenQuanYi Micro Hei Mono}
+
+%如果没有它，会有一些 tex 特殊字符无法正常使用，比如连字符。
+\\defaultfontfeatures{Mapping=tex-text}
+
+% 中文断行
+\\XeTeXlinebreaklocale \"zh\"
+\\XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+
+% 代码设置
+\\lstset{numbers=left,
+numberstyle= \\tiny,
+keywordstyle= \\color{ blue!70},commentstyle=\\color{red!50!green!50!blue!50},
+frame=shadowbox,
+breaklines=true,
+rulesepcolor= \\color{ red!20!green!20!blue!20}
+}
+
+[EXTRA]
+"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("yanming-org-beamer"
+                 "\\documentclass{beamer}
+\\usepackage[slantfont, boldfont]{xeCJK}
+% beamer set
+\\usepackage[none]{hyphenat}
+\\usepackage[abs]{overpic}
+
+[NO-DEFAULT-PACKAGES]
+[PACKAGES]
+
+\\setCJKmainfont{楷体-简} % 设置缺省中文字体
+\\setCJKsansfont{WenQuanYi Micro Hei}
+\\setCJKmonofont{WenQuanYi Micro Hei Mono}
+
+\\setmainfont{Bodoni 72} % 英文衬线字体
+\\setsansfont{Arial} % 英文无衬线字体
+\\setmonofont{DejaVu Sans Mono}
+%\\setmainfont{WenQuanYi Micro Hei} % 设置缺省中文字体
+%\\setsansfont{WenQuanYi Micro Hei}
+%\\setmonofont{WenQuanYi Micro Hei Mono}
+
+%如果没有它，会有一些 tex 特殊字符无法正常使用，比如连字符。
+\\defaultfontfeatures{Mapping=tex-text}
+
+% 中文断行
+\\XeTeXlinebreaklocale \"zh\"
+\\XeTeXlinebreakskip = 0pt plus 1pt minus 0.1pt
+
+% 代码设置
+\\lstset{numbers=left,
+numberstyle= \\tiny,
+keywordstyle= \\color{ blue!70},commentstyle=\\color{red!50!green!50!blue!50},
+frame=shadowbox,
+breaklines=true,
+rulesepcolor= \\color{ red!20!green!20!blue!20}
+}
+
+[EXTRA]
+"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (setq org-latex-pdf-process
+        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          ;;"biber %b" "xelatex -interaction nonstopmode -output-directory %o %f"
+          "bibtex %b"
+          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+;; (setq org-latex-pdf-process
+;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;;         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+(setq org-latex-create-formula-image-program 'imagemagick)
+(spacemacs/set-leader-keys "cx" 'org-toggle-latex-fragment)
+
+
+(setcdr evil-insert-state-map nil)
+(define-key evil-insert-state-map [escape] 'evil-normal-state)
+(setq powerline-default-separator 'arrow)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(with-eval-after-load 'org
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/Documents/MobileOrg/gtd.org" "Tasks")
+           "* TODO [#B] %?\n  %i\n"
+           :empty-lines 1)
+          ("n" "Notes" entry (file+datetree "~/Desktop/Notes/notes.org")
+           "* %?\nEntered on %U\n"))
+        )
+  ;; Remove the markup characters, i.e., "/text/" becomes (italized) "text"
+  (setq org-hide-emphasis-markers t)
+
+  (add-hook 'org-mode-hook 'org-edit-latex-mode)
+
+  ;; Turn on visual-line-mode for Org-mode only
+  ;; Also install "adaptive-wrap" from elpa
+  (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+  (require 'org-edit-latex)
+  (require 'ox-ioslide)
+  (require 'ox-ioslide-helper)
+  (setq org-reveal-root "file:///Users/macbookair/reveal.js")
+  )
+(add-hook 'doc-view-mode-hook 'auto-revert-mode)
+(spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
+;; (pdf-tools-install)
+;; set pdf viewer on OSX and Linux
+(with-eval-after-load 'latex
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'latex-mode-hook 'LaTeX-math-mode)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+  (setq reftex-plug-into-AUCTeX t)
+  (setq TeX-PDF-mode t)
+
+  ;; Use Skim as viewer, enable source <-> PDF sync
+  ;; make latexmk available via C-c C-c
+  ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
+  (add-hook 'LaTeX-mode-hook (lambda ()
+                               (push
+                                '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+                                  :help "Run latexmk on file")
+                                TeX-command-list)))
+  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+
+  ;; use Skim as default pdf viewer
+  ;; Skim's displayline is used for forward search (from .tex to .pdf)
+  ;; option -b highlights the current line; option -g opens Skim in the background
 
   ;; enable PDF-LaTeX synchronization
   ;; press SPC m v to highlight line in PDF
@@ -381,7 +609,31 @@ you should place your code here."
 ;;解决自动复制的问题
 (add-hook 'spacemacs-buffer-mode-hook (lambda ()
                                         (set (make-local-variable 'mouse-1-click-follows-link) nil)))
-  )
+(wrap-region-mode t)
+(wrap-region-add-wrapper "$" "$")
+(global-hungry-delete-mode t)
+(global-centered-cursor-mode t)
+(global-aggressive-indent-mode t)
+(require 'yasnippet)
+(yas-global-mode 1)
+;; Remove Yasnippet's default tab key binding
+(define-key yas-minor-mode-map (kbd "<tab>") nil)
+(define-key yas-minor-mode-map (kbd "TAB") nil)
+;; Alternatively use Control-c + tab
+(define-key yas-minor-mode-map (kbd "C-q") 'yas-expand)
+(global-auto-highlight-symbol-mode t)
+(highlight-indentation-mode t)
+(all-the-icons-dired-mode t)
+
+;; (global-highlight-thing-mode t)
+;; (setq highlight-thing-what-thing 'symbol)
+;; (setq highlight-thing-delay-seconds 0.1)
+;; (setq highlight-thing-limit-to-defun t)
+;; (setq highlight-thing-case-sensitive-p t)
+
+(require 'color-theme-sanityinc-tomorrow)
+(setq linum-format "%d ")
+)
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -407,4 +659,4 @@ you should place your code here."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-)
+  )
