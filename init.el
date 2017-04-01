@@ -32,7 +32,6 @@ values."
    dotspacemacs-configuration-layers
    '(
      (colors :variables
-             colors-colorize-identifiers 'all
              colors-enable-nyan-cat-progress-bar t)
      html
      vimscript
@@ -78,6 +77,7 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(all-the-icons
                                       all-the-icons-dired
+                                      cdlatex
                                       wrap-region
                                       color-theme-sanityinc-tomorrow
                                       org-edit-latex
@@ -320,9 +320,6 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (setq org-directory "~/Documents/MobileOrg")
-  (setq org-mobile-directory "~/Documents/MobileOrg")
-  (setq org-mobile-inbox-for-pull "~/Documents/MobileOrg/inbox.org")
   )
 
 (defun dotspacemacs/user-config ()
@@ -333,63 +330,91 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  (setcdr evil-insert-state-map nil)
+  (define-key evil-insert-state-map [escape] 'evil-normal-state)
+  (setq powerline-default-separator 'arrow)
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+  (with-eval-after-load 'org
+    (setq org-directory "~/Documents/MobileOrg")
+    (setq org-mobile-directory "~/Documents/MobileOrg")
+    (setq org-mobile-inbox-for-pull "~/Documents/MobileOrg/inbox.org")
+    (setq org-capture-templates
+          '(("t" "Todo" entry (file+headline "~/Documents/MobileOrg/gtd.org" "Tasks")
+             "* TODO [#B] %?\n  %i\n"
+             :empty-lines 1)
+            ("n" "Notes" entry (file+datetree "~/Desktop/Notes/notes.org")
+             "* %?\nEntered on %U\n"))
+          )
+    ;; Remove the markup characters, i.e., "/text/" becomes (italized) "text"
+    (setq org-hide-emphasis-markers t)
 
-  ;;org-mode export to latex
-  (require 'ox-latex)
-  (setq org-latex-listings 'minted)
-  ;; (setq org-export-latex-listings t)
+    (add-hook 'org-mode-hook 'org-edit-latex-mode)
+    (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 
-  ;; ;;org-mode source code setup in exporting to latex
-  ;; (add-to-list 'org-latex-listings '("" "listings"))
-  ;; (add-to-list 'org-latex-listings '("" "color"))
-  (add-to-list 'org-latex-packages-alist '("newfloat" "minted"))
+    ;; Turn on visual-line-mode for Org-mode only
+    ;; Also install "adaptive-wrap" from elpa
+    (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
+    (require 'org-edit-latex)
+    (require 'ox-ioslide)
+    (require 'ox-ioslide-helper)
+    (setq org-reveal-root "file:///Users/macbookair/reveal.js")
 
-  (add-to-list 'org-latex-packages-alist
-               '("" "xcolor" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "listings" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "fontspec" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "indentfirst" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "xunicode" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "geometry"))
-  (add-to-list 'org-latex-packages-alist
-               '("" "float"))
-  (add-to-list 'org-latex-packages-alist
-               '("" "longtable"))
-  (add-to-list 'org-latex-packages-alist
-               '("" "tikz"))
-  (add-to-list 'org-latex-packages-alist
-               '("" "fancyhdr"))
-  (add-to-list 'org-latex-packages-alist
-               '("" "textcomp"))
-  (add-to-list 'org-latex-packages-alist
-               '("" "amsmath"))
-  (add-to-list 'org-latex-packages-alist
-               '("" "tabularx" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "booktabs" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "grffile" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "wrapfig" t))
-  (add-to-list 'org-latex-packages-alist
-               '("normalem" "ulem" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "amssymb" t))
-  (add-to-list 'org-latex-packages-alist
-               '("" "capt-of" t))
-  (add-to-list 'org-latex-packages-alist
-               '("figuresright" "rotating" t))
-  (add-to-list 'org-latex-packages-alist
-               '("Lenny" "fncychap" t))
+    ;;org-mode export to latex
+    (require 'ox-latex)
+    (setq org-latex-listings 'minted)
+    ;; (setq org-export-latex-listings t)
 
-  (add-to-list 'org-latex-classes
-               '("yanming-org-book"
-                 "\\documentclass{book}
+    ;; ;;org-mode source code setup in exporting to latex
+    ;; (add-to-list 'org-latex-listings '("" "listings"))
+    ;; (add-to-list 'org-latex-listings '("" "color"))
+    (add-to-list 'org-latex-packages-alist '("newfloat" "minted"))
+
+    (add-to-list 'org-latex-packages-alist
+                 '("" "xcolor" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "listings" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "fontspec" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "indentfirst" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "xunicode" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "geometry"))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "float"))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "longtable"))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "tikz"))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "fancyhdr"))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "textcomp"))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "amsmath"))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "tabularx" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "booktabs" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "grffile" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "wrapfig" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("normalem" "ulem" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "amssymb" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("" "capt-of" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("figuresright" "rotating" t))
+    (add-to-list 'org-latex-packages-alist
+                 '("Lenny" "fncychap" t))
+
+    (add-to-list 'org-latex-classes
+                 '("yanming-org-book"
+                   "\\documentclass{book}
 \\usepackage[slantfont, boldfont]{xeCJK}
 % chapter set
 \\usepackage{titlesec}
@@ -512,9 +537,7 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 
 % 代码设置
 \\lstset{numbers=left,
-numberstyle= \\tiny,
-keywordstyle= \\color{ blue!70},commentstyle=\\color{red!50!green!50!blue!50},
-frame=shadowbox,
+numberstyle= \\tinyframe=shadowbox,
 breaklines=true,
 rulesepcolor= \\color{ red!20!green!20!blue!20}
 }
@@ -540,33 +563,8 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 
 (setq org-latex-create-formula-image-program 'imagemagick)
 (spacemacs/set-leader-keys "cx" 'org-toggle-latex-fragment)
+)
 
-
-(setcdr evil-insert-state-map nil)
-(define-key evil-insert-state-map [escape] 'evil-normal-state)
-(setq powerline-default-separator 'arrow)
-(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-(with-eval-after-load 'org
-  (setq org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/Documents/MobileOrg/gtd.org" "Tasks")
-           "* TODO [#B] %?\n  %i\n"
-           :empty-lines 1)
-          ("n" "Notes" entry (file+datetree "~/Desktop/Notes/notes.org")
-           "* %?\nEntered on %U\n"))
-        )
-  ;; Remove the markup characters, i.e., "/text/" becomes (italized) "text"
-  (setq org-hide-emphasis-markers t)
-
-  (add-hook 'org-mode-hook 'org-edit-latex-mode)
-
-  ;; Turn on visual-line-mode for Org-mode only
-  ;; Also install "adaptive-wrap" from elpa
-  (add-hook 'org-mode-hook 'turn-on-visual-line-mode)
-  (require 'org-edit-latex)
-  (require 'ox-ioslide)
-  (require 'ox-ioslide-helper)
-  (setq org-reveal-root "file:///Users/macbookair/reveal.js")
-  )
 (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
 ;; (pdf-tools-install)
@@ -575,9 +573,10 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq-default TeX-master nil)
+  (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)   ; with AUCTeX LaTeX mode
   (add-hook 'LaTeX-mode-hook 'visual-line-mode)
   (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'latex-mode-hook 'LaTeX-math-mode)
+  (add-hook 'Latex-mode-hook 'LaTeX-math-mode)
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
   (setq reftex-plug-into-AUCTeX t)
   (setq TeX-PDF-mode t)
@@ -623,7 +622,7 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 (define-key yas-minor-mode-map (kbd "C-q") 'yas-expand)
 (global-auto-highlight-symbol-mode t)
 (highlight-indentation-mode t)
-(all-the-icons-dired-mode t)
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 ;; (global-highlight-thing-mode t)
 ;; (setq highlight-thing-what-thing 'symbol)
@@ -633,6 +632,12 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 
 (require 'color-theme-sanityinc-tomorrow)
 (setq linum-format "%d ")
+
+;; (eval-after-load "auto-complete"
+;;   '(progn
+;;      (ac-ispell-setup)))
+;; (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
+;; (add-hook 'org-mode-hook 'ac-ispell-ac-setup)
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
