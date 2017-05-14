@@ -80,6 +80,8 @@ values."
                                       cdlatex
                                       wrap-region
                                       color-theme-sanityinc-tomorrow
+                                      vlf
+                                      spaceline-all-the-icons
                                       org-edit-latex
                                       ox-ioslide
                                       highlight-thing)
@@ -125,6 +127,7 @@ values."
    dotspacemacs-elpa-subdirectory nil
    ;; One of `vim', `emacs' or `hybrid'.
    ;; `hybrid' is like `vim' except that `insert state' is replaced by the
+
    ;; `hybrid state' with `emacs' key bindings. The value can also be a list
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
@@ -320,6 +323,7 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  (setq-default dotspacemacs-startup-banner '"~/Pictures/5183_render_logo_code_gease.png")
   )
 
 (defun dotspacemacs/user-config ()
@@ -335,6 +339,11 @@ you should place your code here."
   (setq powerline-default-separator 'arrow)
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (with-eval-after-load 'org
+    (setq org-plantuml-jar-path
+          (expand-file-name "/usr/local/opt/plantuml/libexec/plantuml.jar"))
+    (setq org-ditaa-jar-path
+          (expand-file-name "/usr/local/opt/ditaa/libexec/ditaa0_10.jar"))
+
     (setq org-directory "~/Documents/MobileOrg")
     (setq org-mobile-directory "~/Documents/MobileOrg")
     (setq org-mobile-inbox-for-pull "~/Documents/MobileOrg/inbox.org")
@@ -467,6 +476,7 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 \\usepackage[slantfont, boldfont]{xeCJK}
 \\usepackage{titlesec}
 \\usepackage{hyperref}
+\\usepackage{mathrsfs}
 
 [NO-DEFAULT-PACKAGES]
 [PACKAGES]
@@ -595,8 +605,7 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
   ;; Skim's displayline is used for forward search (from .tex to .pdf)
   ;; option -b highlights the current line; option -g opens Skim in the background
 
-  ;; enable PDF-LaTeX synchronization
-  ;; press SPC m v to highlight line in PDF
+  ;; enable PDF-LaTeX synchronization press SPC m v to highlight line in PDF
   ;; press shift cmd and click in PDF to show line in sourcecode
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-start-server t)
@@ -610,6 +619,7 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
                                         (set (make-local-variable 'mouse-1-click-follows-link) nil)))
 (wrap-region-mode t)
 (wrap-region-add-wrapper "$" "$")
+(wrap-region-add-wrapper "\\ (" "\\ )" "=")
 (global-hungry-delete-mode t)
 (global-centered-cursor-mode t)
 (global-aggressive-indent-mode t)
@@ -632,12 +642,18 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 
 (require 'color-theme-sanityinc-tomorrow)
 (setq linum-format "%d ")
+(spacemacs/toggle-transparency)
 
-;; (eval-after-load "auto-complete"
-;;   '(progn
-;;      (ac-ispell-setup)))
-;; (add-hook 'git-commit-mode-hook 'ac-ispell-ac-setup)
-;; (add-hook 'org-mode-hook 'ac-ispell-ac-setup)
+;; (eval-after-load "auto-complete" '(progn (ac-ispell-setup))) (add-hook
+;;   'git-commit-mode-hook 'ac-ispell-ac-setup) (add-hook 'org-mode-hook
+;;   'ac-ispell-ac-setup)
+
+(spacemacs/set-leader-keys "ov" 'spacemacs/toggle-transparency)
+(require 'vlf-setup)
+
+(use-package spaceline-all-the-icons
+  :after spaceline
+  :config (spaceline-all-the-icons-theme))
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -665,3 +681,22 @@ This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
   )
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (define-word zenburn-theme youdao-dictionary yapfify xterm-color ws-butler wrap-region winum which-key wgrep web-mode web-beautify volatile-highlights vimrc-mode vi-tilde-fringe uuidgen use-package unfill typit toc-org tagedit sudoku spaceline spacegray-theme smex smeargle slim-mode shell-pop selectric-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racket-mode pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pdf-tools pcre2el pbcopy paradox pangu-spacing pacmacs ox-reveal ox-ioslide osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-edit-latex org-download org-bullets open-junk-file neotree mwim multi-term move-text moe-theme mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc ivy-purpose ivy-hydra info+ indent-guide hy-mode hungry-delete htmlize hl-todo highlight-thing highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy flyspell-correct-ivy flyspell-correct-helm flycheck-pos-tip flx-ido find-by-pinyin-dired fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav ein dumb-jump dracula-theme disaster diff-hl dash-at-point dactyl-mode cython-mode counsel-projectile counsel-dash company-web company-tern company-statistics company-c-headers company-auctex company-anaconda column-enforce-mode color-theme-sanityinc-tomorrow color-identifiers-mode coffee-mode cmake-mode clean-aindent-mode clang-format chinese-pyim cdlatex auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile all-the-icons-dired aggressive-indent adaptive-wrap ace-window ace-pinyin ace-link ace-jump-helm-line ac-ispell 2048-game))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ ))
