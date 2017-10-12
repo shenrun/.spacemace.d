@@ -19,18 +19,19 @@ values."
    ;; listed in `dotspacemacs-configuration-layers'. `nil' disable the lazy
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
-   ;; (default 'unused)
+   ;; (csv octavedefault 'unused)
    dotspacemacs-enable-lazy-installation 'unused
    ;; If non-nil then Space
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
-   ;; If non-ninotesl layers w
-   ;; List of additional paths where to for configuration layers.
-   ;; Paths must have a tradictionary()iling slash (
+   ;; If non-ninotesl layers w List of additional paths where to for
+   ;; configuration layers. Paths must have a tradictionary()iling slash (
    dotspacemacs-configuration-layer-path '()
    ;; List
    dotspacemacs-configuration-layers
    '(
+     ess
+     csv
      (colors :variables
              colors-enable-nyan-cat-progress-bar t)
      html
@@ -81,6 +82,7 @@ values."
                                       wrap-region
                                       color-theme-sanityinc-tomorrow
                                       vlf
+                                      ob-ipython
                                       spaceline-all-the-icons
                                       org-edit-latex
                                       ox-ioslide
@@ -339,6 +341,12 @@ you should place your code here."
   (setq powerline-default-separator 'arrow)
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (with-eval-after-load 'org
+    (require 'ob-ipython)
+    (setq org-confirm-babel-evaluate nil)   ;don't prompt me to confirm everytime I want to evaluate a block
+
+;;; display/update images in the buffer after I evaluate
+    (add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
+
     (setq org-plantuml-jar-path
           (expand-file-name "/usr/local/opt/plantuml/libexec/plantuml.jar"))
     (setq org-ditaa-jar-path
@@ -596,7 +604,7 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
   ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
   (add-hook 'LaTeX-mode-hook (lambda ()
                                (push
-                                '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+                                '("latexmk" "latexmk -shell-escape -pdf %s" TeX-run-TeX nil t
                                   :help "Run latexmk on file")
                                 TeX-command-list)))
   (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
