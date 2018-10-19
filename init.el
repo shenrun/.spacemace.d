@@ -11,8 +11,8 @@ values."
    ;; `+distribution'. For now available distributions are `spacemacs-base'
    ;; or `spacemacs'. (default 'spacemacs)
    dotspacemacs-distribution 'spacemacs
-   ;; Lazy installation of layers (i.e. layers are in
-   ;; with a suppo
+   ;; Lazy installation of layers (i.e. layers are installed only when a file
+   ;; with a supported type is opened). Possible values are `all', `unused'
    ;; and `nil'. `unused' will lazy install only unused layers (i.e. layers
    ;; not listed in variable `dotspacemacs-configuration-layers'), `all' will
    ;; lazy install any layer that support lazy installation even the layers
@@ -21,13 +21,14 @@ values."
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (csv octavedefault 'unused)
    dotspacemacs-enable-lazy-installation 'unused
-   ;; If non-nil then Space
+   ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
-   ;; If non-ninotesl layers w List of additional paths where to for
-   ;; configuration layers. Paths must have a tradictionary()iling slash (
+   ;; If non-nil layers with lazy install support are lazy installed.
+   ;; List of additional paths where to look for configuration layers.
+   ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
-   ;; List
+   ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
      ess
@@ -49,14 +50,13 @@ values."
      ipython-notebook
      python
      (ranger :variables ranger-show-preview t)
-     ivy
      helm
      auto-completion
      (better-defaults :variables better-defaults-move-to-end-of-code-first t)
      emacs-lisp
      git
      markdown
-     pdf-tools
+     ;;   pdf-tools
      osx
      (org :variables org-enable-reveal-js-support t)
      shenrun
@@ -325,7 +325,7 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (setq-default dotspacemacs-startup-banner '"~/Pictures/5183_render_logo_code_gease.png")
+  (setq-default dotspacemacs-startup-banner '"~/.spacemacs.d/logo_code_geass.png")
   )
 
 (defun dotspacemacs/user-config ()
@@ -338,7 +338,9 @@ you should place your code here."
 
   (setcdr evil-insert-state-map nil)
   (define-key evil-insert-state-map [escape] 'evil-normal-state)
-  (setq powerline-default-separator 'arrow)
+
+  (setq spaceline-all-the-icons-separator-type 'arrow)
+
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
   (with-eval-after-load 'org
     (require 'ob-ipython)
@@ -471,16 +473,16 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 
 [EXTRA]
 "
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                   ("\\chapter{%s}" . "\\chapter*{%s}")
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  (add-to-list 'org-latex-classes
-               '("yanming-org-article"
-                 "\\documentclass{article}
+    (add-to-list 'org-latex-classes
+                 '("yanming-org-article"
+                   "\\documentclass{article}
 \\usepackage[slantfont, boldfont]{xeCJK}
 \\usepackage{titlesec}
 \\usepackage{hyperref}
@@ -518,15 +520,15 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 
 [EXTRA]
 "
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  (add-to-list 'org-latex-classes
-               '("yanming-org-beamer"
-                 "\\documentclass{beamer}
+    (add-to-list 'org-latex-classes
+                 '("yanming-org-beamer"
+                   "\\documentclass{beamer}
 \\usepackage[slantfont, boldfont]{xeCJK}
 % beamer set
 \\usepackage[none]{hyphenat}
@@ -562,107 +564,107 @@ rulesepcolor= \\color{ red!20!green!20!blue!20}
 
 [EXTRA]
 "
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  (setq org-latex-pdf-process
-        '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          ;;"biber %b" "xelatex -interaction nonstopmode -output-directory %o %f"
-          "bibtex %b"
-          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-          "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-;; (setq org-latex-pdf-process
-;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;;         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    (setq org-latex-pdf-process
+          '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+            ;;"biber %b" "xelatex -interaction nonstopmode -output-directory %o %f"
+            "bibtex %b"
+            "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+            "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+    ;; (setq org-latex-pdf-process
+    ;;       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    ;;         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+    ;;         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
-(setq org-latex-create-formula-image-program 'imagemagick)
-(spacemacs/set-leader-keys "cx" 'org-toggle-latex-fragment)
-)
+    (setq org-latex-create-formula-image-program 'imagemagick)
+    (spacemacs/set-leader-keys "cx" 'org-toggle-latex-fragment)
+    )
 
-(add-hook 'doc-view-mode-hook 'auto-revert-mode)
-(spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
-;; (pdf-tools-install)
-;; set pdf viewer on OSX and Linux
-(with-eval-after-load 'latex
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq-default TeX-master nil)
-  (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)   ; with AUCTeX LaTeX mode
-  (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'Latex-mode-hook 'LaTeX-math-mode)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-  (setq reftex-plug-into-AUCTeX t)
-  (setq TeX-PDF-mode t)
+  (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+  (spacemacs/set-leader-keys "oy" 'youdao-dictionary-search-at-point+)
+  ;; (pdf-tools-install)
+  ;; set pdf viewer on OSX and Linux
+  (with-eval-after-load 'latex
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq-default TeX-master nil)
+    (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)   ; with AUCTeX LaTeX mode
+    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+    (add-hook 'Latex-mode-hook 'LaTeX-math-mode)
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (setq reftex-plug-into-AUCTeX t)
+    (setq TeX-PDF-mode t)
 
-  ;; Use Skim as viewer, enable source <-> PDF sync
-  ;; make latexmk available via C-c C-c
-  ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
-  (add-hook 'LaTeX-mode-hook (lambda ()
-                               (push
-                                '("latexmk" "latexmk -shell-escape -pdf %s" TeX-run-TeX nil t
-                                  :help "Run latexmk on file")
-                                TeX-command-list)))
-  (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
+    ;; Use Skim as viewer, enable source <-> PDF sync
+    ;; make latexmk available via C-c C-c
+    ;; Note: SyncTeX is setup via ~/.latexmkrc (see below)
+    (add-hook 'LaTeX-mode-hook (lambda ()
+                                 (push
+                                  '("latexmk" "latexmk -shell-escape -pdf %s" TeX-run-TeX nil t
+                                    :help "Run latexmk on file")
+                                  TeX-command-list)))
+    (add-hook 'TeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
 
-  ;; use Skim as default pdf viewer
-  ;; Skim's displayline is used for forward search (from .tex to .pdf)
-  ;; option -b highlights the current line; option -g opens Skim in the background
+    ;; use Skim as default pdf viewer
+    ;; Skim's displayline is used for forward search (from .tex to .pdf)
+    ;; option -b highlights the current line; option -g opens Skim in the background
 
-  ;; enable PDF-LaTeX synchronization press SPC m v to highlight line in PDF
-  ;; press shift cmd and click in PDF to show line in sourcecode
-  (setq TeX-source-correlate-mode t)
-  (setq TeX-source-correlate-start-server t)
-  (setq TeX-source-correlate-method 'synctex)
-  (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-  (setq TeX-view-program-list '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
+    ;; enable PDF-LaTeX synchronization press SPC m v to highlight line in PDF
+    ;; press shift cmd and click in PDF to show line in sourcecode
+    (setq TeX-source-correlate-mode t)
+    (setq TeX-source-correlate-start-server t)
+    (setq TeX-source-correlate-method 'synctex)
+    (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+    (setq TeX-view-program-list '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
 
-(setq ns-use-srgb-colorspace nil)
-;;解决自动复制的问题
-(add-hook 'spacemacs-buffer-mode-hook (lambda ()
-                                        (set (make-local-variable 'mouse-1-click-follows-link) nil)))
-(wrap-region-mode t)
-(wrap-region-add-wrapper "$" "$")
-(wrap-region-add-wrapper "\\ (" "\\ )" "=")
-(global-hungry-delete-mode t)
-(global-centered-cursor-mode t)
-(global-aggressive-indent-mode t)
-(require 'yasnippet)
-(yas-global-mode 1)
-;; Remove Yasnippet's default tab key binding
-(define-key yas-minor-mode-map (kbd "<tab>") nil)
-(define-key yas-minor-mode-map (kbd "TAB") nil)
-;; Alternatively use Control-c + tab
-(define-key yas-minor-mode-map (kbd "C-q") 'yas-expand)
-(global-auto-highlight-symbol-mode t)
-(highlight-indentation-mode t)
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+  (setq ns-use-srgb-colorspace nil)
+  ;;解决自动复制的问题
+  (add-hook 'spacemacs-buffer-mode-hook (lambda ()
+                                          (set (make-local-variable 'mouse-1-click-follows-link) nil)))
+  (wrap-region-mode t)
+  (wrap-region-add-wrapper "$" "$")
+  (wrap-region-add-wrapper "\\ (" "\\ )" "=")
+  (global-hungry-delete-mode t)
+  (global-centered-cursor-mode t)
+  (global-aggressive-indent-mode t)
+  (require 'yasnippet)
+  (yas-global-mode 1)
+  ;; Remove Yasnippet's default tab key binding
+  (define-key yas-minor-mode-map (kbd "<tab>") nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+  ;; Alternatively use Control-c + tab
+  (define-key yas-minor-mode-map (kbd "C-q") 'yas-expand)
+  (global-auto-highlight-symbol-mode t)
+  (highlight-indentation-mode t)
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
-;; (global-highlight-thing-mode t)
-;; (setq highlight-thing-what-thing 'symbol)
-;; (setq highlight-thing-delay-seconds 0.1)
-;; (setq highlight-thing-limit-to-defun t)
-;; (setq highlight-thing-case-sensitive-p t)
+  ;; (global-highlight-thing-mode t)
+  ;; (setq highlight-thing-what-thing 'symbol)
+  ;; (setq highlight-thing-delay-seconds 0.1)
+  ;; (setq highlight-thing-limit-to-defun t)
+  ;; (setq highlight-thing-case-sensitive-p t)
 
-(require 'color-theme-sanityinc-tomorrow)
-(setq linum-format "%d ")
-(spacemacs/toggle-transparency)
+  (require 'color-theme-sanityinc-tomorrow)
+  (setq linum-format "%d ")
+  (spacemacs/toggle-transparency)
 
-;; (eval-after-load "auto-complete" '(progn (ac-ispell-setup))) (add-hook
-;;   'git-commit-mode-hook 'ac-ispell-ac-setup) (add-hook 'org-mode-hook
-;;   'ac-ispell-ac-setup)
+  ;; (eval-after-load "auto-complete" '(progn (ac-ispell-setup))) (add-hook
+  ;;   'git-commit-mode-hook 'ac-ispell-ac-setup) (add-hook 'org-mode-hook
+  ;;   'ac-ispell-ac-setup)
 
-(spacemacs/set-leader-keys "ov" 'spacemacs/toggle-transparency)
-(require 'vlf-setup)
+  (spacemacs/set-leader-keys "ov" 'spacemacs/toggle-transparency)
+  (require 'vlf-setup)
 
-(use-package spaceline-all-the-icons
-  :after spaceline
-  :config (spaceline-all-the-icons-theme))
-)
+  (use-package spaceline-all-the-icons
+    :after spaceline
+    :config (spaceline-all-the-icons-theme))
+  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
